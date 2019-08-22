@@ -1,0 +1,3 @@
+[submodule "BinaryBrain"]
+	path = BinaryBrain
+	url = https://github.com/ryuz/BinaryBrain
