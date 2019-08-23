@@ -1,17 +1,17 @@
 from libcpp.memory cimport shared_ptr
 
 
-#cdef extern from "bb/ReLU.h" namespace "bb":
-#    cdef cppclass _ReLU "bb::ReLU" [BT, RT]:
-#        @staticmethod
-#        shared_ptr[_ReLU[BT, RT]] Create()
-#
-#
-#cdef class ReLU:
-#    cdef shared_ptr[_ReLU[float, float]] thisptr
-#
-#    def __init__(self):
-#        self.thisptr = _ReLU[float, float].Create()
+cdef extern from "bb/ReLU.h" namespace "bb":
+    cdef cppclass _ReLU "bb::ReLU" [BT, RT]:
+        @staticmethod
+        shared_ptr[_ReLU[BT, RT]] Create()
+
+
+cdef class ReLU:
+    cdef shared_ptr[_ReLU[float, float]] thisptr
+
+    def __init__(self):
+        self.thisptr = _ReLU[float, float].Create()
 
 
 cdef extern from "bb/Binarize.h" namespace "bb":
