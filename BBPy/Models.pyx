@@ -67,6 +67,19 @@ cdef class ShuffleModulation:
         self.thisptr = _ShuffleModulation.Create(shuffle_size, lowering_size, seed)
 
 
+cdef extern from "bb/DenseAffine.h" namespace "bb":
+    cdef cppclass _DenseAffine "bb::DenseAffine" [T]:
+        @staticmethod
+        shared_ptr[_DenseAffine[T]] Create(const indices_t& output_shape)
+
+
+cdef class DenseAffine:
+    cdef shared_ptr[_DenseAffine[float]] thisptr
+
+    def __init__(self, output_shape):
+        self.thisptr = _DenseAffine[float].Create(output_shape)
+
+
 cdef extern from "bb/Sequential.h" namespace "bb":
     cdef cppclass _Sequential "bb::Sequential":
         @staticmethod
@@ -104,6 +117,32 @@ cdef class Reduce:
 
     def __init__(self, output_shape):
         self.thisptr = _Reduce[float, float].Create(output_shape)
+
+
+cdef extern from "bb/BinaryToReal.h" namespace "bb":
+    cdef cppclass _BinaryToReal "bb::BinaryToReal" [FT, BT]:
+        @staticmethod
+        shared_ptr[_BinaryToReal[FT, BT]] Create(index_t modulation_size, indices_t output_shape)
+
+
+cdef class BinaryToReal:
+    cdef shared_ptr[_BinaryToReal[float, float]] thisptr
+
+    def __init__(self, modulation_size, output_shape):
+        self.thisptr = _BinaryToReal[float, float].Create(modulation_size, output_shape)
+
+
+cdef extern from "bb/UpSampling.h" namespace "bb":
+    cdef cppclass _UpSampling "bb::UpSampling" [FT, BT]:
+        @staticmethod
+        shared_ptr[_UpSampling[FT, BT]] Create(index_t filter_h_size, index_t filter_w_size, bool fill)
+
+
+cdef class UpSampling:
+    cdef shared_ptr[_UpSampling[float, float]] thisptr
+
+    def __init__(self, filter_h_size, filter_w_size, fill):
+        self.thisptr = _UpSampling[float, float].Create(filter_h_size, filter_w_size, fill)
 
 
 cdef extern from "bb/ConcatenateCoefficient.h" namespace "bb":
@@ -146,6 +185,20 @@ cdef class ConvolutionIm2Col:
         self.thisptr = _ConvolutionIm2Col[float, float].Create(filter_h_size, filter_w_size, y_stride, x_stride, padding)
 
 
+# FIXME
+#cdef extern from "bb/AveragePooling.h" namespace "bb":
+#    cdef cppclass _AveragePooling "bb::AveragePooling" [FT, BT]:
+#        @staticmethod
+#        shared_ptr[_AveragePooling[FT, BT]] Create(index_t filter_h_size, index_t filter_w_size)
+
+
+#cdef class AveragePooling:
+#    cdef shared_ptr[_AveragePooling[float, float]] thisptr
+#
+#    def __init__(self, filter_h_size, filter_w_size):
+#        self.thisptr = _AveragePooling[float, float].Create(filter_h_size, filter_w_size)
+
+
 cdef extern from "bb/BinaryLutN.h" namespace "bb":
     cdef cppclass _BinaryLut6 "bb::BinaryLutN<6, bb::Bit, float>":
         @staticmethod
@@ -172,6 +225,33 @@ cdef class SparseLut6:
         self.thisptr = _SparseLut6.Create(output_shape, batch_norm, connection, seed)
 
 
+cdef extern from "bb/SparseLutDiscreteN.h" namespace "bb":
+    cdef cppclass _SparseLutDiscrete6 "bb::SparseLutDiscreteN<6, bb::Bit, float>":
+        @staticmethod
+        shared_ptr[_SparseLutDiscrete6] Create(const indices_t& output_shape, bool batch_norm, string connection, uint64_t seed)
+
+
+cdef class SparseLutDiscrete6:
+    cdef shared_ptr[_SparseLutDiscrete6] thisptr
+
+    def __init__(self, output_shape, batch_norm, connection, seed):
+        self.thisptr = _SparseLutDiscrete6.Create(output_shape, batch_norm, connection, seed)
+
+
+# FIXME
+#cdef extern from "bb/SparseBinaryLutN.h" namespace "bb":
+#    cdef cppclass _SparseBinaryLut6 "bb::SparseBinaryLutN<6, bb::Bit, float>":
+#        @staticmethod
+#        shared_ptr[_SparseBinaryLut6] Create(const indices_t& output_shape, string connection, uint64_t seed)
+#
+#
+#cdef class SparseBinaryLut6:
+#    cdef shared_ptr[_SparseBinaryLut6] thisptr
+#
+#    def __init__(self, output_shape, connection, seed):
+#        self.thisptr = _SparseBinaryLut6.Create(output_shape, connection, seed)
+
+
 cdef extern from "bb/StochasticLutN.h" namespace "bb":
     cdef cppclass _StochasticLut6 "bb::StochasticLutN<6, float, float>":
         @staticmethod
@@ -184,7 +264,7 @@ cdef class StochasticLut6:
     def __init__(self, output_shape, connection, seed):
         self.thisptr = _StochasticLut6.Create(output_shape, connection, seed)
 
-
+#FIXME
 #cdef extern from "bb/StochasticMaxPooling.h" namespace "bb":
 #    cdef cppclass _StochasticMaxPooling "bb::StochasticMaxPooling" [FT, BT]:
 #        @staticmethod
