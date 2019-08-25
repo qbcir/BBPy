@@ -1,4 +1,6 @@
+from cython.operator cimport dereference as deref
 from libcpp.memory cimport shared_ptr, static_pointer_cast
+
 from Models cimport *
 
 
@@ -38,6 +40,8 @@ cdef extern from "bb/Sequential.h" namespace "bb":
         @staticmethod
         shared_ptr[_Sequential] Create()
 
+        void Add(shared_ptr[_Model] layer)
+
 
 cdef extern from "bb/MaxPooling.h" namespace "bb":
     cdef cppclass _MaxPooling "bb::MaxPooling" [FT, BT]:
@@ -57,10 +61,23 @@ cdef extern from "bb/BinaryToReal.h" namespace "bb":
         shared_ptr[_BinaryToReal[FT, BT]] Create(index_t modulation_size, indices_t output_shape)
 
 
+cdef extern from "bb/LoweringConvolution.h" namespace "bb":
+    cdef cppclass _LoweringConvolution "bb::LoweringConvolution" [FT, BT]:
+        @staticmethod
+        shared_ptr[_LoweringConvolution[FT, BT]] Create(shared_ptr[_Model] layer,
+            index_t filter_h_size, index_t filter_w_size, index_t y_stride, index_t x_stride, string padding)
+
+
 cdef extern from "bb/UpSampling.h" namespace "bb":
     cdef cppclass _UpSampling "bb::UpSampling" [FT, BT]:
         @staticmethod
         shared_ptr[_UpSampling[FT, BT]] Create(index_t filter_h_size, index_t filter_w_size, bool fill)
+
+
+cdef extern from "bb/ConcatenateCoefficient.h" namespace "bb":
+    cdef cppclass _ConcatenateCoefficient "bb::ConcatenateCoefficient" [FT, BT]:
+        @staticmethod
+        shared_ptr[_ConcatenateCoefficient[FT, BT]] Create(index_t concatenate_size, uint64_t seed)
 
 
 cdef extern from "bb/ConcatenateCoefficient.h" namespace "bb":
@@ -172,6 +189,10 @@ cdef class Sequential(Model):
     def __init__(self):
         self.thisptr = _Sequential.Create()
 
+    def Add(self, model: Model):
+        cdef shared_ptr[_Model] _model = model.ptr()
+        deref(self.thisptr).Add(_model)
+
     cdef shared_ptr[_Model] ptr(self):
         return static_pointer_cast[_Model, _Sequential](self.thisptr)
 
@@ -244,6 +265,20 @@ cdef class ConvolutionIm2Col(Model):
 
     cdef shared_ptr[_Model] ptr(self):
         return static_pointer_cast[_Model, _ConvolutionIm2Col[float, float]](self.thisptr)
+
+
+
+cdef class LoweringConvolution(Model):
+    cdef shared_ptr[_LoweringConvolution[float, float]] thisptr
+
+    def __init__(self, layer: Model, filter_h_size: int, filter_w_size: int,
+                 y_stride=1, x_stride=1, padding="valid"):
+        cdef shared_ptr[_Model] _layer = layer.ptr()
+        self.thisptr = _LoweringConvolution[float, float].Create(_layer, filter_h_size, filter_w_size, y_stride, x_stride, padding)
+
+    cdef shared_ptr[_Model] ptr(self):
+        return static_pointer_cast[_Model, _LoweringConvolution[float, float]](self.thisptr)
+
 
 # FIXME
 #cdef extern from "bb/AveragePooling.h" namespace "bb":
