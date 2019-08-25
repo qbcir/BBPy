@@ -126,6 +126,19 @@ cdef extern from "bb/StochasticLutN.h" namespace "bb":
         @staticmethod
         shared_ptr[_StochasticLut6] Create(const indices_t& output_shape, string connection, uint64_t seed)
 
+
+cdef extern from "bb/MicroMlpAffine.h" namespace "bb":
+    cdef cppclass _MicroMlpAffine6x12 "bb::MicroMlpAffine<6, 12, float, float>":
+        @staticmethod
+        shared_ptr[_MicroMlpAffine6x12] Create(const indices_t& output_shape, string connection, uint64_t seed)
+
+
+cdef extern from "bb/MicroMlp.h" namespace "bb":
+    cdef cppclass _MicroMlp6x12 "bb::MicroMlp<6, 12, float, float>":
+        @staticmethod
+        shared_ptr[_MicroMlp6x12] Create(const indices_t& output_shape, string connection, float momentum)
+
+
 ###############################################################################
 cdef class Model:
     cdef shared_ptr[_Model] ptr(self):
@@ -346,6 +359,27 @@ cdef class StochasticLut6(Model):
 
     cdef shared_ptr[_Model] ptr(self):
         return static_pointer_cast[_Model, _StochasticLut6](self.thisptr)
+
+
+cdef class MicroMlpAffine6x12(Model):
+    cdef shared_ptr[_MicroMlpAffine6x12] thisptr
+
+    def __init__(self, output_shape, connection: str = "", seed: int = 1):
+        self.thisptr = _MicroMlpAffine6x12.Create(output_shape, connection, seed)
+
+    cdef shared_ptr[_Model] ptr(self):
+        return static_pointer_cast[_Model, _MicroMlpAffine6x12](self.thisptr)
+
+
+cdef class MicroMlp6x12(Model):
+    cdef shared_ptr[_MicroMlp6x12] thisptr
+
+    def __init__(self, output_shape, connection: str = "", momentum: float = 0.0):
+        self.thisptr = _MicroMlp6x12.Create(output_shape, connection, momentum)
+
+    cdef shared_ptr[_Model] ptr(self):
+        return static_pointer_cast[_Model, _MicroMlp6x12](self.thisptr)
+
 
 #FIXME
 #cdef extern from "bb/StochasticMaxPooling.h" namespace "bb":
