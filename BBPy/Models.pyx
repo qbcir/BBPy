@@ -2,6 +2,7 @@ from cython.operator cimport dereference as deref
 from libcpp.memory cimport shared_ptr, static_pointer_cast
 
 from Models cimport *
+from DataType cimport *
 
 
 ###############################################################################

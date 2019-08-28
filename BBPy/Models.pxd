@@ -5,14 +5,6 @@ from libcpp cimport bool
 from libc.stdint cimport intptr_t, uint64_t
 
 
-cdef extern from "<iostream>":
-    pass
-
-
-ctypedef intptr_t index_t
-ctypedef vector[index_t] indices_t
-
-
 cdef extern from "bb/Model.h" namespace "bb":
     cdef cppclass _Model "bb::Model":
         pass
