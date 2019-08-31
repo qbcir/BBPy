@@ -26,3 +26,17 @@ cdef extern from "bb/DataType.h" namespace "bb":
         bool operator>=(const _Bit &bit)
         bool operator<(const _Bit &bit)
         bool operator<=(const _Bit &bit)
+
+
+    cdef cppclass _TrainData "bb::TrainData" [T]:
+        indices_t x_shape
+        indices_t t_shape
+        vector[vector[T]] x_train
+        vector[vector[T]] t_train
+        vector[vector[T]] x_test
+        vector[vector[T]] t_test
+
+
+cdef class TrainData:
+    cdef _TrainData[float] _td
+

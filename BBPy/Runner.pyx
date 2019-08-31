@@ -1,3 +1,4 @@
+from cython.operator cimport dereference as deref
 from libcpp.memory cimport shared_ptr
 from libcpp.string cimport string
 from libcpp cimport bool
@@ -7,6 +8,9 @@ from Models cimport *
 from MetricsFunctions cimport *
 from LossFunctions cimport *
 from Optimizers cimport *
+from DataType cimport *
+
+import numpy as np
 
 
 ctypedef void (*callback_proc_t)(shared_ptr[_Model], void*)
@@ -32,6 +36,9 @@ cdef extern from "bb/Runner.h" namespace "bb":
             callback_proc_t callback_proc,
             void* callback_user)
 
+        void Fitting(_TrainData[T]& td, index_t epoch_size, index_t batch_size)
+        double Evaluation(_TrainData[T]& td, index_t batch_size)
+
 
 cdef class Runner:
     cdef shared_ptr[_Runner[float]] thisptr
@@ -47,3 +54,9 @@ cdef class Runner:
         self.thisptr = _Runner[float].Create(
             name, _net, epoch_size, batch_size, _metrics_func, _loss_func, _optimizer,
             print_progress, file_read, file_write, write_serial, initial_evaluation, seed, NULL, NULL)
+
+    def fit(self, train_data: TrainData, epoch_size: int, batch_size: int):
+        deref(self.thisptr).Fitting(train_data._td, epoch_size, batch_size)
+
+    def eval(self, train_data: TrainData, batch_size: int):
+        return np.double(deref(self.thisptr).Evaluation(train_data._td, batch_size))
