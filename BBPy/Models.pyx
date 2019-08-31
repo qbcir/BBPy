@@ -1,11 +1,8 @@
-from cython.operator cimport dereference as deref
-from libcpp.memory cimport shared_ptr, static_pointer_cast
-
-from Models cimport *
-from DataType cimport *
-
-
 ###############################################################################
+cdef extern from "bb/Model.h" namespace "bb":
+    cdef cppclass _Model "bb::Model":
+        pass
+
 cdef extern from "bb/BatchNormalization.h" namespace "bb":
     cdef cppclass _BatchNormalization "bb::BatchNormalization" [T]:
         @staticmethod

@@ -1,9 +1,8 @@
-from libcpp.memory cimport shared_ptr, static_pointer_cast
-
-from MetricsFunctions cimport *
-
-
 ###############################################################################
+cdef extern from "bb/MetricsFunction.h" namespace "bb":
+    cdef cppclass _MetricsFunction "bb::MetricsFunction":
+        pass
+
 cdef extern from "bb/MetricsBinaryAccuracy.h" namespace "bb":
     cdef cppclass _MetricsBinaryAccuracy "bb::MetricsBinaryAccuracy" [T]:
         @staticmethod

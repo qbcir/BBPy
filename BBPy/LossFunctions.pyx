@@ -1,9 +1,8 @@
-from libcpp.memory cimport shared_ptr, static_pointer_cast
-
-from LossFunctions cimport *
-
-
 ###############################################################################
+cdef extern from "bb/LossFunction.h" namespace "bb":
+    cdef cppclass _LossFunction "bb::LossFunction":
+        pass
+
 cdef extern from "bb/LossMeanSquaredError.h" namespace "bb":
     cdef cppclass _LossMeanSquaredError "bb::LossMeanSquaredError" [T]:
         @staticmethod

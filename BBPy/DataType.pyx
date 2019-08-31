@@ -1,11 +1,30 @@
-import numpy as np
+###############################################################################
+cdef extern from "bb/DataType.h" namespace "bb":
+    cdef cppclass _Bit "bb::Bit":
+        _Bit()
+        _Bit (int v)
+        _Bit(const _Bit& bit)
+        _Bit(bool v)
 
-cimport numpy as np
+        bool operator==(const _Bit &bit)
+        bool operator>(const _Bit &bit)
+        bool operator>=(const _Bit &bit)
+        bool operator<(const _Bit &bit)
+        bool operator<=(const _Bit &bit)
 
-from DataType cimport _TrainData
+
+    cdef cppclass _TrainData "bb::TrainData" [T]:
+        indices_t x_shape
+        indices_t t_shape
+        vector[vector[T]] x_train
+        vector[vector[T]] t_train
+        vector[vector[T]] x_test
+        vector[vector[T]] t_test
 
 
 cdef class TrainData:
+    cdef _TrainData[float] _td
+
     def __init__(self, x_train: np.ndarray, t_train: np.ndarray, x_test: np.ndarray, t_test: np.ndarray):
         #
         for dim in x_train.shape[:-1]:

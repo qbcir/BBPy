@@ -1,9 +1,8 @@
-from libcpp.memory cimport shared_ptr, static_pointer_cast
-
-from Optimizers cimport *
-
-
 ###############################################################################
+cdef extern from "bb/Optimizer.h" namespace "bb":
+    cdef cppclass _Optimizer "bb::Optimizer":
+        pass
+
 cdef extern from "bb/OptimizerAdam.h" namespace "bb":
     cdef cppclass _OptimizerAdam "bb::OptimizerAdam" [T]:
         @staticmethod

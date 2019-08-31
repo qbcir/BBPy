@@ -1,12 +1,11 @@
-from libcpp.memory cimport shared_ptr, static_pointer_cast
-from libc.stdint cimport int64_t
-from libcpp cimport bool
-
-from DataType cimport *
-from ValueGenerator cimport *
-
-
 ###############################################################################
+cdef extern from "bb/ValueGenerator.h" namespace "bb":
+    cdef cppclass _FloatValueGenerator "bb::ValueGenerator<float>":
+        pass
+
+    cdef cppclass _BitValueGenerator "bb::ValueGenerator<bb::Bit>":
+        pass
+
 cdef extern from "bb/NormalDistributionGenerator.h" namespace "bb":
     cdef cppclass _NormalDistributionGenerator "bb::NormalDistributionGenerator" [T]:
         @staticmethod

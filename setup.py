@@ -4,8 +4,12 @@ from Cython.Build import cythonize
 
 
 extensions = [
-    Extension("*", sources=["BBPy/*.pyx"], include_dirs=['BinaryBrain/include'],
-              extra_compile_args=['-O2', '-mavx2', '-mfma', '-fopenmp', '-std=c++14'], language="c++")
+    Extension("BinaryBrain",
+              sources=["BBPy/BinaryBrain.pyx"],
+              include_dirs=['BinaryBrain/include'],
+              libraries=['omp'],
+              extra_compile_args=['-O2', '-mavx2', '-mfma', '-fopenmp', '-std=c++14'],
+              language="c++")
 ]
 
 setup(
